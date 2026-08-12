@@ -1,0 +1,384 @@
+@layer overrides, bootstrap, theme, base, components, utilities;
+@import "tailwindcss";
+@import "./tailwind.css";
+@import "bootstrap/dist/css/bootstrap.min.css" layer(bootstrap);
+@import "./variables.css";
+
+/* Tailwind v4 theme — real brand palette (teal / gold / ivory / wine) from
+   the team's reference build. Same class names as before (bg-ink-900,
+   text-brass-500, bg-emerald, etc.) so no component files needed editing —
+   only the underlying hex values changed. */
+@theme {
+  --color-ink: #0E2B26;
+  --color-ink-50: #F2F4F3;
+  --color-ink-100: #E4E9E7;
+  --color-ink-400: #647672;
+  --color-ink-600: #20302D;
+  --color-ink-800: #163B34;
+  --color-ink-900: #0E2B26;
+
+  --color-ivory: #F6F1E7;
+  --color-ivory-100: #F6F1E7;
+  --color-ivory-200: #EFE8D9;
+
+  --color-brass: #C4A85D;
+  --color-brass-100: #F1E4C6;
+  --color-brass-300: #D8C287;
+  --color-brass-500: #C4A85D;
+  --color-brass-600: #AF8E52;
+  --color-brass-700: #8A6F3F;
+
+  --color-emerald: #1B6B5C;
+  --color-emerald-400: #2F6B6B;
+  --color-emerald-600: #0E4238;
+
+  --color-rose: #5B2430;
+
+  --radius-card: 20px;
+  --shadow-card: 0 1px 2px rgba(14,43,38,0.05), 0 8px 24px -12px rgba(14,43,38,0.14);
+}
+
+@font-face {
+  font-family: "Ringtte";
+  src: url("/fonts/Ringtte.woff2") format("woff2"),
+       url("/fonts/Ringtte.woff") format("woff"),
+       url("/fonts/Ringtte.otf") format("opentype");
+  font-display: swap;
+}
+
+@theme {
+  --font-heading: "Ringtte", sans-serif;
+  --font-ticker: "Optika", sans-serif;
+  --font-sans: "Optika", sans-serif;
+}
+
+@font-face {
+  font-family: "Optika";
+  src: url("/fonts/Optika-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Optika";
+  src: url("/fonts/Optika-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Optika";
+  src: url("/fonts/Optika-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Optika";
+  src: url("/fonts/Optika-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Optika";
+  src: url("/fonts/Optika-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+* { box-sizing: border-box; }
+
+html, #root {
+  height: 100%;
+}
+/* Bootstrap ships utility classes with the same names as Tailwind's
+   (px-5, py-4, etc.) and marks them !important, so they silently win
+   over Tailwind's versions everywhere in the app. This block re-declares
+   just the colliding ones, scoped to .admin-theme, in a layer ordered
+   before `bootstrap` — since !important respects layer order in reverse,
+   this wins back priority without touching Bootstrap itself. */
+@layer overrides {
+  .admin-theme .p-0  { padding: calc(var(--spacing) * 0) !important; }
+  .admin-theme .p-1  { padding: calc(var(--spacing) * 1) !important; }
+  .admin-theme .p-2  { padding: calc(var(--spacing) * 2) !important; }
+  .admin-theme .p-3  { padding: calc(var(--spacing) * 3) !important; }
+  .admin-theme .p-4  { padding: calc(var(--spacing) * 4) !important; }
+  .admin-theme .p-5  { padding: calc(var(--spacing) * 5) !important; }
+
+  .admin-theme .px-0 { padding-inline: calc(var(--spacing) * 0) !important; }
+  .admin-theme .px-1 { padding-inline: calc(var(--spacing) * 1) !important; }
+  .admin-theme .px-2 { padding-inline: calc(var(--spacing) * 2) !important; }
+  .admin-theme .px-3 { padding-inline: calc(var(--spacing) * 3) !important; }
+  .admin-theme .px-4 { padding-inline: calc(var(--spacing) * 4) !important; }
+  .admin-theme .px-5 { padding-inline: calc(var(--spacing) * 5) !important; }
+
+  .admin-theme .py-0 { padding-block: calc(var(--spacing) * 0) !important; }
+  .admin-theme .py-1 { padding-block: calc(var(--spacing) * 1) !important; }
+  .admin-theme .py-2 { padding-block: calc(var(--spacing) * 2) !important; }
+  .admin-theme .py-3 { padding-block: calc(var(--spacing) * 3) !important; }
+  .admin-theme .py-4 { padding-block: calc(var(--spacing) * 4) !important; }
+  .admin-theme .py-5 { padding-block: calc(var(--spacing) * 5) !important; }
+
+  .admin-theme .m-0  { margin: calc(var(--spacing) * 0) !important; }
+  .admin-theme .m-1  { margin: calc(var(--spacing) * 1) !important; }
+  .admin-theme .m-2  { margin: calc(var(--spacing) * 2) !important; }
+  .admin-theme .m-3  { margin: calc(var(--spacing) * 3) !important; }
+  .admin-theme .m-4  { margin: calc(var(--spacing) * 4) !important; }
+  .admin-theme .m-5  { margin: calc(var(--spacing) * 5) !important; }
+
+  .admin-theme .mx-0 { margin-inline: calc(var(--spacing) * 0) !important; }
+  .admin-theme .mx-1 { margin-inline: calc(var(--spacing) * 1) !important; }
+  .admin-theme .mx-2 { margin-inline: calc(var(--spacing) * 2) !important; }
+  .admin-theme .mx-3 { margin-inline: calc(var(--spacing) * 3) !important; }
+  .admin-theme .mx-4 { margin-inline: calc(var(--spacing) * 4) !important; }
+  .admin-theme .mx-5 { margin-inline: calc(var(--spacing) * 5) !important; }
+
+  .admin-theme .my-0 { margin-block: calc(var(--spacing) * 0) !important; }
+  .admin-theme .my-1 { margin-block: calc(var(--spacing) * 1) !important; }
+  .admin-theme .my-2 { margin-block: calc(var(--spacing) * 2) !important; }
+  .admin-theme .my-3 { margin-block: calc(var(--spacing) * 3) !important; }
+  .admin-theme .my-4 { margin-block: calc(var(--spacing) * 4) !important; }
+  .admin-theme .my-5 { margin-block: calc(var(--spacing) * 5) !important; }
+}
+
+/* Everything below is scoped to .admin-theme so it never leaks onto the
+   public site — apply class="admin-theme" on the admin app's root wrapper
+   (already done in AdminLayout.jsx and LoginPage.jsx). */
+
+.admin-theme {
+  /* Was `min-height: 100%`, relative only to #root's own box. If actual
+     page content is ever shorter than the real browser viewport, that
+     could still leave a gap below #root's box. 100vh anchors directly to
+     the viewport instead, so the ivory background always reaches the
+     bottom of the visible window regardless of content height. */
+  min-height: 100vh;
+  /* FIX: was `background: var(--ivory)` — Tailwind v4's @theme block above
+     generates custom properties prefixed with `color-` (--color-ivory,
+     --color-ink-900, etc). `--ivory` was never defined anywhere, so this
+     background never actually painted; it silently fell through to the
+     browser's default white. That's the white gap below the table in the
+     screenshot — everywhere the correct ivory color WAS showing, it was
+     because some element used a Tailwind utility class (bg-ivory) instead
+     of relying on this base rule. */
+  background: var(--color-ivory);
+  color: var(--color-ink-900);
+  /* Client requirement: Optika only, dashboard-wide. Was 'Jost', sans-serif. */
+  font-family: 'Optika', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.admin-theme ::selection {
+  /* Same var-name typo fix as above (was var(--brass-100) / var(--ink-900)). */
+  background: var(--color-brass-100);
+  color: var(--color-ink-900);
+}
+
+/* Scrollbar */
+.admin-theme ::-webkit-scrollbar { width: 8px; height: 8px; }
+.admin-theme ::-webkit-scrollbar-track { background: transparent; }
+.admin-theme ::-webkit-scrollbar-thumb { background: var(--color-ink-100); border-radius: 8px; }
+.admin-theme ::-webkit-scrollbar-thumb:hover { background: var(--color-brass-300); }
+
+/* Signature corner clip — kept as a utility but no longer applied by
+   default anywhere; the real brand system favors soft rounded curves
+   (see the sidebar's 1.75rem radius) over faceted cuts. Left in place in
+   case a specific accent element still wants it. */
+.admin-theme .facet {
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+.admin-theme .facet-sm {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+
+/* Focus visibility (accessibility floor) */
+.admin-theme a:focus-visible,
+.admin-theme button:focus-visible,
+.admin-theme input:focus-visible,
+.admin-theme select:focus-visible,
+.admin-theme textarea:focus-visible,
+.admin-theme [tabindex]:focus-visible {
+  outline: 2px solid var(--color-brass-500);
+  outline-offset: 2px;
+}
+/* Dark pill-style controls opt out of the default gold focus-visible
+   outline — it doesn't read well against their own gradient backgrounds,
+   which already communicate focus/hover via border/shadow changes.
+   - .search-pill: Topbar's search AND TableToolbar's dark search input
+     (TableToolbar.jsx wraps it in this class when dark={true}).
+   - .status-pill: StatusFilterDropdown's toolbar trigger button (not
+     applied to the fullWidth form variant, which still wants the
+     standard gold focus ring like other form fields). */
+.admin-theme .search-pill input:focus-visible,
+.admin-theme .status-pill:focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Client requirement: Optika only, dashboard-wide. font-display was
+   'Cormorant Garamond', serif (and was silently falling back to Times New
+   Roman anyway, since Cormorant Garamond was never actually loaded) —
+   every heading using .font-display now renders in Optika too. */
+.admin-theme .font-display { font-family: 'Optika', sans-serif; }
+.admin-theme .font-mono { font-family: 'JetBrains Mono', monospace; }
+.admin-theme .font-ringtte { font-family: 'Ringtte', 'Optika', sans-serif; }
+.admin-theme .font-optika { font-family: 'Optika', sans-serif; }
+
+/* Data tables */
+.admin-theme .pj-table {
+  border-collapse: collapse;
+  /* Matches the toolbar wrapper's p-5 sm:p-6 (20px/24px) in DataTable.jsx,
+     so the table's first/last column lines up with the search box and
+     card header above it instead of sitting flush against the card edge. */
+  margin: 0 20px;
+  width: calc(100% - 40px);
+}
+@media (min-width: 640px) {
+  .admin-theme .pj-table {
+    margin: 0 24px;
+    width: calc(100% - 48px);
+  }
+}
+.admin-theme .pj-table th {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--color-ink-100);
+  white-space: nowrap;
+}
+.admin-theme .pj-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-ink-100);
+  font-size: 14px;
+  vertical-align: middle;
+}
+@media (min-width: 640px) {
+  .admin-theme .pj-table th,
+  .admin-theme .pj-table td {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+/* First/last cell align exactly with the table's own left/right margin
+   (set above) — so NAME/TYPE/etc. sit flush under "Recent inquiries" /
+   the search box instead of being inset an extra 20-24px on top of it. */
+.admin-theme .pj-table th:first-child,
+.admin-theme .pj-table td:first-child {
+  padding-left: 0;
+}
+.admin-theme .pj-table th:last-child,
+.admin-theme .pj-table td:last-child {
+  padding-right: 0;
+}
+.admin-theme .pj-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+.admin-theme .pj-table tbody tr:hover td {
+  background: var(--color-ivory-200);
+}
+
+/* Dark surface — used on Cards that sit on the teal gradient (Recent
+   inquiries, and every list-page DataTable/Settings card). Re-points the
+   ink-* tokens so existing text-ink-900 / text-ink-400 / border-ink-100
+   utilities already written throughout the page-level column definitions
+   "just work" and read as light-on-teal instead of dark-on-white, with no
+   per-page edits needed. Custom CSS vars cascade normally, so anything
+   inside .dark-surface that references var(--color-ink-*) picks this up. */
+.admin-theme .dark-surface {
+  --color-ink-900: var(--color-brass-100);
+  --color-ink-800: var(--color-brass-100);
+  --color-ink-600: rgba(216, 194, 135, 0.75);
+  --color-ink-400: rgba(216, 194, 135, 0.55);
+  --color-ink-100: rgba(255, 255, 255, 0.14);
+  --color-ink-50: rgba(255, 255, 255, 0.08);
+  --color-rose: #E7A6B6;
+}
+/* ...but form controls (and the solid dark primary Button) keep their own
+   light background regardless of the card behind them, so their internal
+   text/placeholder/border needs to stay dark-on-light, not light-on-light.
+   Reset the tokens back to the real palette for those elements only. */
+.admin-theme .dark-surface input,
+.admin-theme .dark-surface select,
+.admin-theme .dark-surface textarea {
+  --color-ink-900: #0E2B26;
+  --color-ink-800: #163B34;
+  --color-ink-600: #20302D;
+  --color-ink-400: #647672;
+  --color-ink-100: #E4E9E7;
+  --color-ink-50: #F2F4F3;
+}
+
+/* Table variant for .dark-surface cards — swaps the hairline borders and
+   hover state for light-on-translucent instead of the default dark ones. */
+.admin-theme .pj-table--dark th {
+  color: rgba(216, 194, 135, 0.65);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.admin-theme .pj-table--dark td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.admin-theme .pj-table--dark tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---- Dashboard glassmorphism ----
+   Page-level dark gradient background (applied via the `dashboard-bg`
+   class in AdminLayout.jsx) plus a reusable `.glass` surface class shared
+   by the sidebar, topbar pill, stat cards, Inquiry Trends, Quick actions
+   and Recent inquiries so they all read as one consistent glass system
+   instead of one-off styles. */
+/* Compound selector (no space) — `dashboard-bg` is applied on the SAME
+   element as `admin-theme` (see AdminLayout.jsx), not a descendant of it.
+   A descendant selector here (`.admin-theme .dashboard-bg`) would never
+   match and the div would silently fall back to no background at all —
+   which is exactly what caused every glass panel to read pale/washed-out
+   instead of dark teal (backdrop-filter was blurring the light default
+   page background instead of this gradient).
+   Base color now steps through five stops (was three, and the first two
+   were both near-identical near-black tones) so the teal reads as an
+   actual top-to-bottom gradient instead of a flat dark fill with a couple
+   of faint radial highlights sitting on top of it. */
+.admin-theme.dashboard-bg {
+  background:
+    radial-gradient(ellipse 900px 520px at 12% -10%, rgba(36, 106, 106, 0.32), transparent 60%),
+    radial-gradient(ellipse 700px 460px at 105% 15%, rgba(196, 168, 93, 0.08), transparent 55%),
+    radial-gradient(ellipse 800px 500px at 50% 120%, rgba(27, 107, 92, 0.2), transparent 60%),
+    linear-gradient(160deg, #123B36 0%, #0E2E2A 30%, #0A2422 55%, #071B19 80%, #051413 100%);
+}
+
+.admin-theme .glass {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+}
+.admin-theme .glass-strong {
+  background: var(--glass-fill-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+}
+/* Subtle lift + brighter border glow on hover — used sparingly (stat
+   cards, quick action pills) per the "don't overdo animation" brief. */
+.admin-theme .glass-hover {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.admin-theme .glass-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(216, 194, 135, 0.35);
+  box-shadow: var(--glass-shadow), 0 0 0 1px rgba(216, 194, 135, 0.08);
+}

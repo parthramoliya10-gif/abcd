@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               String        @id @default(uuid())
+  name             String
+  email            String        @unique
+  password         String
+  isActive         Boolean       @default(true)
+  isOtpVerified    Boolean       @default(false)
+  otpCode          String?
+  otpExpiresAt     DateTime?
+  otpPurpose       OtpPurpose?
+  refreshTokenHash String?
+  lastLoginAt      DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  brands           brands[]
+  collections      collections[]
+  exhibitions      exhibitions[]
+
+  @@map("users")
+}
+
+model ActivityLog {
+  id        String   @id
+  action    String
+  module    String
+  details   String
+  userName  String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model brand_images {
+  id           String   @id
+  brandId      String
+  imageUrl     String
+  altText      String?
+  caption      String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  brands       brands   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+}
+
+model brands {
+  id            String         @id
+  name          String
+  slug          String         @unique
+  description   String
+  overview      String?
+  logoUrl       String?
+  bannerUrl     String?
+  ctaTitle      String?
+  ctaButtonText String?
+  displayOrder  Int            @default(0)
+  isActive      Boolean        @default(true)
+  createdBy     String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime
+  brand_images  brand_images[]
+  users         User           @relation(fields: [createdBy], references: [id])
+  collections   collections[]
+}
+
+model cms_pages {
+  id          String   @id
+  pageName    String   @unique
+  title       String
+  content     String
+  bannerImage String?
+  isPublished Boolean  @default(false)
+  updatedAt   DateTime
+}
+
+model collection_images {
+  id           String      @id
+  collectionId String
+  imageUrl     String
+  altText      String?
+  caption      String?
+  displayOrder Int         @default(0)
+  isThumbnail  Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  collections  collections @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+}
+
+model collections {
+  id                String              @id
+  brandId           String
+  name              String
+  slug              String              @unique
+  description       String
+  category          String?
+  bannerUrl         String?
+  specification     String?
+  ctaTitle          String?
+  ctaButtonText     String?
+  featured          Boolean             @default(false)
+  displayOrder      Int                 @default(0)
+  isActive          Boolean             @default(true)
+  createdBy         String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime
+  collection_images collection_images[]
+  brands            brands              @relation(fields: [brandId], references: [id])
+  users             User                @relation(fields: [createdBy], references: [id])
+}
+
+model exhibition_images {
+  id           String      @id @default(uuid())
+  exhibitionId String
+  imageUrl     String
+  altText      String?
+  caption      String?
+  displayOrder Int         @default(0)
+  createdAt    DateTime    @default(now())
+  exhibitions  exhibitions @relation(fields: [exhibitionId], references: [id], onDelete: Cascade)
+}
+
+model exhibitions {
+  id                String              @id @default(uuid())
+  title             String
+  slug              String              @unique
+  thumbnailUrl      String?
+  description       String
+  venue             String
+  city              String?
+  country           String?
+  startDate         DateTime
+  endDate           DateTime
+  featured          Boolean             @default(false)
+  isActive          Boolean             @default(true)
+  createdBy         String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime
+  exhibition_images exhibition_images[]
+  users             User                @relation(fields: [createdBy], references: [id])
+}
+
+model inquiries {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  company   String?
+  message   String
+  status    InquiryStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+}
+
+model settings {
+  id           String   @id
+  siteName     String
+  logoUrl      String?
+  faviconUrl   String?
+  email        String?
+  phone        String?
+  address      String?
+  facebookUrl  String?
+  instagramUrl String?
+  linkedinUrl  String?
+  youtubeUrl   String?
+  updatedAt    DateTime
+}
+
+model team_members {
+  id           String   @id
+  name         String
+  designation  String
+  bio          String?
+  photoUrl     String?
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
+
+enum OtpPurpose {
+  LOGIN
+  FORGOT_PASSWORD
+}
+
+enum InquiryStatus {
+  NEW
+  READ
+}
+
+enum SeoEntityType {
+  STATIC_PAGE
+  BRAND
+  COLLECTION
+  EXHIBITION
+  BLOG
+  PRODUCT
+  LOCATION
+}
+
+enum RobotsPolicy {
+  INDEX_FOLLOW
+  INDEX_NOFOLLOW
+  NOINDEX_FOLLOW
+  NOINDEX_NOFOLLOW
+}
+
+enum SitemapChangeFrequency {
+  ALWAYS
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+  NEVER
+}
+
+enum SchemaType {
+  WEBSITE
+  ORGANIZATION
+  BRAND
+  EXHIBITION
+  COLLECTION
+  EVENT
+}
+
+model SeoSettings {
+  id String @id @default(cuid())
+
+  siteName String
+  siteUrl  String
+
+  defaultMetaTitle       String
+  defaultMetaDescription String
+  defaultOgImage         String?
+
+  robots RobotsPolicy @default(INDEX_FOLLOW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("seo_settings")
+}
+
+model SeoPage {
+  id String @id @default(cuid())
+
+  displayName String
+
+  slug String @unique
+
+  entityType SeoEntityType
+  entityId   String?
+
+  metaTitle       String
+  metaDescription String
+
+  canonicalUrl String?
+
+  robots RobotsPolicy @default(INDEX_FOLLOW)
+
+  ogTitle       String?
+  ogDescription String?
+  ogImage       String?
+
+  twitterTitle       String?
+  twitterDescription String?
+  twitterImage       String?
+
+  schemaType SchemaType?
+
+  priority        Float?                  @default(0.5)
+  changeFrequency SitemapChangeFrequency?
+
+  includeInSitemap Boolean @default(true)
+  isIndexed        Boolean @default(true)
+  isPublished      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tags SeoPageTag[]
+
+  @@map("seo_pages")
+}
+
+model SeoTag {
+  id String @id @default(cuid())
+
+  name String @unique
+  slug String @unique
+
+  createdAt DateTime @default(now())
+
+  pages SeoPageTag[]
+
+  @@map("seo_tags")
+}
+
+model SeoPageTag {
+  seoPageId String
+  seoTagId  String
+
+  seoPage SeoPage @relation(fields: [seoPageId], references: [id], onDelete: Cascade)
+  seoTag  SeoTag  @relation(fields: [seoTagId], references: [id], onDelete: Cascade)
+
+  @@id([seoPageId, seoTagId])
+  @@map("seo_page_tags")
+}
