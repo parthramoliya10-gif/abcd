@@ -13,8 +13,8 @@
   "license": "ISC",
   "devEngines": {
   "packageManager": {
-    "name": "npm",
-    "version": "^10.9.0",
+    "name": "pnpm",
+    "version": "^11.10.0",
     "onFail": "download"
   }
 
